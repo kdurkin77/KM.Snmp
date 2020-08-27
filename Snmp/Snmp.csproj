@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <nullable>enable</nullable>
+    <Authors>kmiller77</Authors>
+    <Description>This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree</Description>
+    <Company />
+    <PackageId>KM.Snmp</PackageId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="DTLS2.Net" Version="1.0.18" />
+    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Snmp.Interfaces\Snmp.Interfaces.csproj" />
+  </ItemGroup>
+
+</Project>
