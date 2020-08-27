@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
+    <PackageId>KM.Snmp.Interfaces</PackageId>
   </PropertyGroup>
 
 </Project>
