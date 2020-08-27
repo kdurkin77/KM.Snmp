@@ -3,6 +3,21 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>KM.Snmp.Interfaces</PackageId>
+    <Description>Interfaces for KM.Snmp</Description>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Authors>kmiller77</Authors>
+    <Company>kmiller77kmiller77</Company>
+    <Product>KM.Snmp.Interfaces</Product>
+    <RepositoryUrl>https://github.com/kmiller77/KM.Snmp</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/kmiller77/KM.Snmp</PackageProjectUrl>
+    <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>
