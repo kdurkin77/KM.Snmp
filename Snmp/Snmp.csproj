@@ -13,13 +13,13 @@
     <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
     <Product>KM.Snmp</Product>
     <Description>This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree with timeouts and retries</Description>
-    <PackageReleaseNotes>Added ability to build as NETSTANDARD2_0</PackageReleaseNotes>
-    <Version>1.1.0</Version>
+    <PackageReleaseNotes>Updated KM.Lextm.SharpSnmp and DTLS2.Net</PackageReleaseNotes>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DTLS2.Net" Version="1.0.18" />
-    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.1.0" />
+    <PackageReference Include="DTLS2.Net" Version="1.1.0" />
+    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
   </ItemGroup>
   
