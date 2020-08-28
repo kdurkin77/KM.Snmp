@@ -11,6 +11,8 @@
     <RepositoryUrl>https://github.com/kmiller77/KM.Snmp</RepositoryUrl>
     <PackageProjectUrl>https://github.com/kmiller77/KM.Snmp</PackageProjectUrl>
     <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
+    <PackageReleaseNotes>Added ability to build as NETSTANDARD2_0</PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
