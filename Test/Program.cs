@@ -1,9 +1,12 @@
 ﻿using KM.Snmp;
 using KM.Snmp.Interfaces;
 using Lextm.SharpSnmpLib;
+using Lextm.SharpSnmpLib.Messaging;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Test
@@ -12,6 +15,7 @@ namespace Test
     {
         public static async Task Main(string[] _)
         {
+            //basic parameters
             var ip = IPAddress.Parse("");
             var oid = "";
             var communityString = "";
@@ -19,21 +23,107 @@ namespace Test
             var port = 161;
             var timeout = TimeSpan.FromSeconds(5);
 
+            //SNMPv3 Parameters
+            var certificate = new X509Certificate2();
+            var connectionTimeout = TimeSpan.FromSeconds(2);
+
+            //Set Value can be int, string (octetstring), IPAddress, byte[], or uint
+            var setValue = 1;
+
+            //GetSubtree parameters
+            var maxRepetitions = 5;
+
             var myCustomSnmp = new CustomSnmp(new SnmpLogger(), new Logger());
-            var result = await myCustomSnmp.GetV2Async(ip, oid, communityString, retries, port, timeout);
-            if (result is null)
+
+            //SNMPv2 Get
+            var getV2Result = await myCustomSnmp.GetV2Async(ip, oid, communityString, retries, port, timeout);
+            if (getV2Result is null || getV2Result.Data is null)
             {
                 throw new Exception("Snmp Failed");
             }
 
-            var type = result.Data.TypeCode;
-            var data = result.Data;
-            if (type != SnmpType.OctetString)
+            var getV2Type = getV2Result.Data.TypeCode;
+            var getV2Data = getV2Result.Data;
+            if (getV2Type != SnmpType.OctetString)
             {
                 throw new Exception("Snmp Failed");
             }
 
-            Console.WriteLine(data);
+            Console.WriteLine($"SNMPv2 Get result: {getV2Data}");
+
+            //SNMPv3 TSM Get
+            var getV3Result = await myCustomSnmp.GetV3TsmAsync(ip, oid, retries, port, timeout, certificate, connectionTimeout);
+            if (getV3Result is null || getV3Result.Data is null)
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            var getV3Type = getV3Result.Data.TypeCode;
+            var getV3Data = getV3Result.Data;
+            if (getV3Type != SnmpType.OctetString)
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            Console.WriteLine($"SNMPv3 TSM Get result: {getV3Data}");
+
+            //SNMPv2 Set
+            var setV2Result = await myCustomSnmp.SetV2Async(ip, oid, communityString, retries, port, timeout, setValue);
+            if (setV2Result is null || setV2Result.Pdu() is null)
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            var setV2Type = setV2Result.Pdu().TypeCode;
+            var setV2Data = setV2Result.Pdu().ErrorStatus;
+            if (setV2Type != SnmpType.OctetString)
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            Console.WriteLine($"SNMPv2 Get result: {setV2Data}");
+
+            //SNMPv3 TSM set
+            var setV3Result = await myCustomSnmp.SetV3TsmAsync(ip, oid, retries, port, timeout, certificate, connectionTimeout, setValue);
+            if (setV3Result is null || setV3Result.Pdu() is null)
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            var setV3Type = setV3Result.Pdu().TypeCode;
+            var setV3Data = setV3Result.Pdu();
+            if (setV3Type != SnmpType.OctetString)
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            Console.WriteLine($"SNMPv3 TSM Get result: {setV3Data}");
+
+            //SNMPv2 GetSubtree
+            var (v2BulkwalkResult, v2Results) = await myCustomSnmp.GetSubtreeV2Async(ip, oid, communityString, port, maxRepetitions, retries, timeout);
+            if (v2Results is null || !v2Results.Any())
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            Console.WriteLine($"SNMPv2 GetSubtree result count: {v2BulkwalkResult}");
+            foreach(var result in v2Results)
+            {
+                Console.WriteLine($"SNMPv2 GetSubtree results: {result.Data}");
+            }
+
+            //SNMPv3 GetSubtree
+            var (v3BulkwalkResult, v3Results) = await myCustomSnmp.GetSubtreeV3TsmAsync(ip, oid, port, maxRepetitions, retries, timeout, certificate, connectionTimeout);
+            if (v3Results is null || !v3Results.Any())
+            {
+                throw new Exception("Snmp Failed");
+            }
+
+            Console.WriteLine($"SNMPv2 GetSubtree result count: {v3BulkwalkResult}");
+            foreach (var result in v3Results)
+            {
+                Console.WriteLine($"SNMPv2 GetSubtree results: {result.Data}");
+            }
         }
     }
 
