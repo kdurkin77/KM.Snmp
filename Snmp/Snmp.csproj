@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <nullable>enable</nullable>
     <Authors>kmiller77</Authors>
@@ -19,6 +19,10 @@
     <PackageReference Include="DTLS2.Net" Version="1.0.18" />
     <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.7" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Memory" Version="4.5.4" />
   </ItemGroup>
 
   <ItemGroup>

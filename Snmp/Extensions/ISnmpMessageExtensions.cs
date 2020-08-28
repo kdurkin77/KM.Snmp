@@ -2,6 +2,7 @@
 using Lextm.SharpSnmpLib.Messaging;
 using Lextm.SharpSnmpLib.Security;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -20,15 +21,14 @@ namespace KM.Snmp.Extensions
 
                 await socket.ConnectAsync(remoteEndPoint).ConfigureAwait(false);
 
-                var sendingBytes = new ReadOnlyMemory<byte>(request.ToBytes());
+                var sendingBytes = request.ToBytes();
                 await socket.SendAsync(sendingBytes, SocketFlags.None, cancellationToken).ConfigureAwait(false);
 
-                var recvd = new Memory<byte>(new byte[100000]);
-
+                var recvd = new byte[100000];
                 var recvdCount = await socket.ReceiveAsync(recvd, SocketFlags.None, cancellationToken).ConfigureAwait(false);
 
                 var registry = new UserRegistry();
-                var response = MessageFactory.ParseMessages(recvd.Slice(0, recvdCount).ToArray(), 0, recvdCount, registry)[0];
+                var response = MessageFactory.ParseMessages(recvd.Take(recvdCount).ToArray(), 0, recvdCount, registry)[0];
 
                 var responseCode = response.TypeCode();
                 if (responseCode == SnmpType.ResponsePdu || responseCode == SnmpType.ReportPdu)
