@@ -7,6 +7,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snmp", "Snmp\Snmp.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Snmp.Interfaces", "Snmp.Interfaces\Snmp.Interfaces.csproj", "{0E73EDC3-9AA6-4606-8206-C2D2A0941BAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{4BE5AEC1-2BBC-496C-99E6-6918E5BA0454}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DependencyInjectionTest", "DependencyInjectionTest\DependencyInjectionTest.csproj", "{3E81EB6B-5431-49E8-8114-28E8FA0FAF92}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{0E73EDC3-9AA6-4606-8206-C2D2A0941BAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E73EDC3-9AA6-4606-8206-C2D2A0941BAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E73EDC3-9AA6-4606-8206-C2D2A0941BAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE5AEC1-2BBC-496C-99E6-6918E5BA0454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE5AEC1-2BBC-496C-99E6-6918E5BA0454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE5AEC1-2BBC-496C-99E6-6918E5BA0454}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE5AEC1-2BBC-496C-99E6-6918E5BA0454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E81EB6B-5431-49E8-8114-28E8FA0FAF92}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E81EB6B-5431-49E8-8114-28E8FA0FAF92}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E81EB6B-5431-49E8-8114-28E8FA0FAF92}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E81EB6B-5431-49E8-8114-28E8FA0FAF92}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
