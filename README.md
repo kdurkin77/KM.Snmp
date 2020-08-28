@@ -1,9 +1,9 @@
 # KM.Snmp
-This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree.  
+This library is meant to work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree.  
 
 In order to create an instance of CustomSnmp to make these calls, you will need to pass it an `ISnmpLog` and an `ILogger`.
 
-The purpose of the ISnmpLog is to log each SNMP transaction however you choose. There are two example projects, one for regular legacy framework or .Net Core without dependency injection called `Test` and the other to show how to work with dependency injection in .Net Core called `DependencyInjectionTest`.  
+The purpose of the `ISnmpLog` is to log each SNMP transaction however you choose. There are two example projects, one for regular legacy framework or .Net Core without dependency injection called `Test` and the other to show how to work with dependency injection in .Net Core called `DependencyInjectionTest`.  
 
 An ISnmpLog will need to contain a function with the following signature:
 ````c#
@@ -64,3 +64,4 @@ if(type != SnmpType.OctetString)
 
 return data.ToString();
 ````
+More examples can be found in the test projects
