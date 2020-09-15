@@ -5,11 +5,10 @@
     <PackageId>KM.Snmp.Interfaces</PackageId>
     <Description>Interfaces for KM.Snmp</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Authors>kmiller77</Authors>
-    <Company>kmiller77kmiller77</Company>
+    <Authors>kdurkin77</Authors>
     <Product>KM.Snmp.Interfaces</Product>
-    <RepositoryUrl>https://github.com/kmiller77/KM.Snmp</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/kmiller77/KM.Snmp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/kdurkin77/KM.Snmp</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/kdurkin77/KM.Snmp</PackageProjectUrl>
     <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
     <PackageReleaseNotes>Added ability to build as NETSTANDARD2_0</PackageReleaseNotes>
     <Version>1.1.0</Version>

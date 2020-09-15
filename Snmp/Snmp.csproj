@@ -4,12 +4,12 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <nullable>enable</nullable>
-    <Authors>kmiller77</Authors>
+    <Authors>kdurkin77</Authors>
     <Company />
     <PackageId>KM.Snmp</PackageId>
-    <PackageProjectUrl>https://github.com/kmiller77/KM.Snmp</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/kdurkin77/KM.Snmp</PackageProjectUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <RepositoryUrl>https://github.com/kmiller77/KM.Snmp</RepositoryUrl>
+    <RepositoryUrl>https://github.com/kdurkin77/KM.Snmp</RepositoryUrl>
     <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
     <Product>KM.Snmp</Product>
     <Description>This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree with timeouts and retries</Description>
