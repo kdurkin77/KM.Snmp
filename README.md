@@ -1,5 +1,5 @@
-# KD.Snmp
-This library is meant to work on top of KD.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree.  
+# KM.Snmp
+This library is meant to work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree.  
 
 In order to create an instance of CustomSnmp to make these calls, you will need to pass it an `ISnmpLog` and an `ILogger`.
 
