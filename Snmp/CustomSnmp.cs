@@ -3,7 +3,6 @@ using Lextm.SharpSnmpLib;
 using Lextm.SharpSnmpLib.Messaging;
 using Lextm.SharpSnmpLib.Security;
 using Microsoft.Extensions.Logging;
-using KM.Snmp.Extensions;
 using KM.Snmp.Interfaces;
 using System;
 using System.Collections.Generic;

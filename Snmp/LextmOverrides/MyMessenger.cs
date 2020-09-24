@@ -1,6 +1,5 @@
 ﻿using DTLS;
 using Lextm.SharpSnmpLib.Security;
-using KM.Snmp.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;

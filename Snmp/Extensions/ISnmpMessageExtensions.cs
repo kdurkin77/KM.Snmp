@@ -1,6 +1,4 @@
-﻿using Lextm.SharpSnmpLib;
-using Lextm.SharpSnmpLib.Messaging;
-using Lextm.SharpSnmpLib.Security;
+﻿using Lextm.SharpSnmpLib.Security;
 using System;
 using System.Linq;
 using System.Net;
@@ -8,7 +6,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace KM.Snmp.Extensions
+namespace Lextm.SharpSnmpLib.Messaging
 {
     internal static class ISnmpMessageExtensions
     {
@@ -19,7 +17,7 @@ namespace KM.Snmp.Extensions
                 var addressFamily = remoteEndPoint.AddressFamily == AddressFamily.InterNetwork ? AddressFamily.InterNetwork : AddressFamily.InterNetworkV6;
                 using var socket = new Socket(addressFamily, SocketType.Dgram, ProtocolType.Udp);
 
-                await socket.ConnectAsync(remoteEndPoint).ConfigureAwait(false);
+                await socket.ConnectAsync(remoteEndPoint, cancellationToken).ConfigureAwait(false);
 
                 var sendingBytes = request.ToBytes();
                 await socket.SendAsync(sendingBytes, SocketFlags.None, cancellationToken).ConfigureAwait(false);
