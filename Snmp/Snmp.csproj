@@ -13,8 +13,8 @@
     <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
     <Product>KM.Snmp</Product>
     <Description>This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree with timeouts and retries</Description>
-    <PackageReleaseNotes>Updated KM.Lextm.SharpSnmp and DTLS2.Net</PackageReleaseNotes>
-    <Version>1.1.1</Version>
+    <PackageReleaseNotes>Added a cancellation token to ConnectAsync, updated the namespaces for the extensions so they make more sense</PackageReleaseNotes>
+    <Version>1.1.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
