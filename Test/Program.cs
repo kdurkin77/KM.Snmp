@@ -74,9 +74,8 @@ namespace Test
                 throw new Exception("Snmp Failed");
             }
 
-            var setV2Type = setV2Result.Pdu().TypeCode;
             var setV2Data = setV2Result.Pdu().ErrorStatus;
-            if (setV2Type != SnmpType.OctetString)
+            if (setV2Data != new Integer32(0))
             {
                 throw new Exception("Snmp Failed");
             }
@@ -90,9 +89,8 @@ namespace Test
                 throw new Exception("Snmp Failed");
             }
 
-            var setV3Type = setV3Result.Pdu().TypeCode;
-            var setV3Data = setV3Result.Pdu();
-            if (setV3Type != SnmpType.OctetString)
+            var setV3Data = setV3Result.Pdu().ErrorStatus;
+            if (setV3Data != new Integer32(0))
             {
                 throw new Exception("Snmp Failed");
             }
@@ -107,7 +105,7 @@ namespace Test
             }
 
             Console.WriteLine($"SNMPv2 GetSubtree result count: {v2BulkwalkResult}");
-            foreach(var result in v2Results)
+            foreach (var result in v2Results)
             {
                 Console.WriteLine($"SNMPv2 GetSubtree results: {result.Data}");
             }

@@ -40,6 +40,8 @@ namespace System.Net.Sockets
             }
         }
 #endif
+
+#if !NET6_0_OR_GREATER
         public static async Task ConnectAsync(this Socket socket, IPEndPoint endpoint, CancellationToken cancellationToken)
         {
             var connectTask = socket.ConnectAsync(endpoint);
@@ -52,5 +54,7 @@ namespace System.Net.Sockets
                 throw new TaskCanceledException();
             }
         }
+#endif
+
     }
 }

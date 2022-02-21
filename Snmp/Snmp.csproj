@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-    <LangVersion>8.0</LangVersion>
-    <nullable>enable</nullable>
+    <TargetFrameworks>net6;net5;netstandard2.1;netstandard2.0;</TargetFrameworks>
+	<LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
     <Authors>kdurkin77</Authors>
     <Company />
     <PackageId>KM.Snmp</PackageId>
@@ -13,22 +13,27 @@
     <PackageTags>SNMP; DTLS;SNMPv2;SNMPV3;TSM;USM;</PackageTags>
     <Product>KM.Snmp</Product>
     <Description>This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree with timeouts and retries</Description>
-    <PackageReleaseNotes>Updated DTLS2.Net and KM.Lextm.SharpSnmpLib to allow for more than 2 certs in the chain</PackageReleaseNotes>
-    <Version>1.1.4</Version>
+    <PackageReleaseNotes>
+	    Added support for net6 and net5
+        Using latest language version
+        Enabled nullables
+        Treating all warnings as errors
+        Updated KM.Lextm.SharpSnmpLib
+        Obsoleted the USM functions since they use DES and SHA1 and they are considered insecure now
+        Adding KM.Snmp.Interfaces from nuget instead of adding the package directly so that the dependencies are correct
+	</PackageReleaseNotes>
+    <Version>1.2.0</Version>
+  </PropertyGroup>
+	
+  <PropertyGroup>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="DTLS2.Net" Version="1.1.3" />
-    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.1.3" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.8" />
-  </ItemGroup>
-  
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Memory" Version="4.5.4" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Snmp.Interfaces\Snmp.Interfaces.csproj" />
+    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.5.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="KM.Snmp.Interfaces" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>

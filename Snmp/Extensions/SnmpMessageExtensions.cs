@@ -1,4 +1,6 @@
-﻿using Lextm.SharpSnmpLib.Security;
+﻿#if !NET6_0_OR_GREATER
+
+using Lextm.SharpSnmpLib.Security;
 using System;
 using System.Linq;
 using System.Net;
@@ -8,14 +10,13 @@ using System.Threading.Tasks;
 
 namespace Lextm.SharpSnmpLib.Messaging
 {
-    internal static class ISnmpMessageExtensions
+    public static class SnmpMessageExtensions
     {
         internal static async Task<ISnmpMessage> GetResponseAsync(this ISnmpMessage request, IPEndPoint remoteEndPoint, CancellationToken cancellationToken)
         {
             try
             {
-                var addressFamily = remoteEndPoint.AddressFamily == AddressFamily.InterNetwork ? AddressFamily.InterNetwork : AddressFamily.InterNetworkV6;
-                using var socket = new Socket(addressFamily, SocketType.Dgram, ProtocolType.Udp);
+                using var socket = new Socket(remoteEndPoint.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
 
                 await socket.ConnectAsync(remoteEndPoint, cancellationToken).ConfigureAwait(false);
 
@@ -50,3 +51,5 @@ namespace Lextm.SharpSnmpLib.Messaging
         }
     }
 }
+
+#endif

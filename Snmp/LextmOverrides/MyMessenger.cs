@@ -13,12 +13,16 @@ namespace Lextm.SharpSnmpLib.Messaging
 {
     public static class MyMessenger
     {
-        private static readonly NumberGenerator _RequestCounter = new NumberGenerator(int.MinValue, int.MaxValue);
-        private static readonly NumberGenerator _MessageCounter = new NumberGenerator(0, int.MaxValue);
-        private static readonly ObjectIdentifier _IdNotInTimeWindow = new ObjectIdentifier(new uint[] { 1, 3, 6, 1, 6, 3, 15, 1, 1, 2, 0 });
+        private static readonly NumberGenerator _RequestCounter = new(int.MinValue, int.MaxValue);
+        private static readonly NumberGenerator _MessageCounter = new(0, int.MaxValue);
+        private static readonly ObjectIdentifier _IdNotInTimeWindow = new(new uint[] { 1, 3, 6, 1, 6, 3, 15, 1, 1, 2, 0 });
 
         public static async Task<IList<Variable>> GetAsync(VersionCode version, IPEndPoint endpoint, OctetString community, IList<Variable> variables, TimeSpan timeout)
         {
+#if NET6_0_OR_GREATER
+            using (var cts = new CancellationTokenSource(timeout))
+                return await Messenger.GetAsync(version, endpoint, community, variables, cts.Token);
+#else
             if (version == VersionCode.V3)
             {
                 throw new NotSupportedException("SNMP v3 is not supported");
@@ -57,10 +61,11 @@ namespace Lextm.SharpSnmpLib.Messaging
             }
 
             return pdu.Variables;
+#endif
         }
 
         public static async Task<int> BulkWalkV2Async(IPEndPoint endpoint, OctetString community, ObjectIdentifier table, IList<Variable> list,
-            int maxRepetitions, int retries, TimeSpan timeout, WalkMode mode, IPrivacyProvider? privacy, ISnmpMessage? report)
+            int maxRepetitions, int retries, TimeSpan timeout, WalkMode mode)
         {
             if (endpoint is null)
             {
@@ -72,7 +77,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                 throw new ArgumentNullException(nameof(community));
             }
 
-            if(table is null)
+            if (table is null)
             {
                 throw new ArgumentNullException(nameof(table));
             }
@@ -82,17 +87,17 @@ namespace Lextm.SharpSnmpLib.Messaging
                 throw new ArgumentNullException(nameof(list));
             }
 
-            if(maxRepetitions < 0)
+            if (maxRepetitions < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(maxRepetitions), $"{maxRepetitions}");
             }
 
-            if(retries < 0)
+            if (retries < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(retries), $"{retries}");
             }
 
-            if(timeout < TimeSpan.Zero)
+            if (timeout < TimeSpan.Zero)
             {
                 throw new ArgumentOutOfRangeException(nameof(timeout), $"{timeout}");
             }
@@ -100,11 +105,9 @@ namespace Lextm.SharpSnmpLib.Messaging
             var tableV = new Variable(table);
             var seed = tableV;
             var result = 0;
-            IList<Variable> next;
-            var message = report;
-            var data = await BulkHasNextV2Async(endpoint, community, seed, maxRepetitions, retries, timeout, privacy, message).ConfigureAwait(false);
-            next = data.Item2;
-            message = data.Item3;
+            var data = await BulkHasNextV2Async(endpoint, community, seed, maxRepetitions, retries, timeout, null).ConfigureAwait(false);
+            var next = data.Item2;
+            var message = data.Item3;
             while (data.Item1)
             {
                 var subTreeMask = string.Format(CultureInfo.InvariantCulture, "{0}.", table);
@@ -131,7 +134,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                 }
 
                 seed = next[next.Count - 1];
-                data = await BulkHasNextV2Async(endpoint, community, seed, maxRepetitions, retries, timeout, privacy, message).ConfigureAwait(false);
+                data = await BulkHasNextV2Async(endpoint, community, seed, maxRepetitions, retries, timeout, message).ConfigureAwait(false);
                 next = data.Item2;
                 message = data.Item3;
             }
@@ -180,11 +183,9 @@ namespace Lextm.SharpSnmpLib.Messaging
             var tableV = new Variable(table);
             var seed = tableV;
             var result = 0;
-            IList<Variable> next;
-            var message = report;
-            var data = await BulkHasNextV3UsmAsync(endpoint, community, seed, maxRepetitions, retries, timeout, privacy, message).ConfigureAwait(false);
-            next = data.Item2;
-            message = data.Item3;
+            var data = await BulkHasNextV3UsmAsync(endpoint, community, seed, maxRepetitions, retries, timeout, privacy, report).ConfigureAwait(false);
+            var next = data.Item2;
+            var message = data.Item3;
             while (data.Item1)
             {
                 var subTreeMask = string.Format(CultureInfo.InvariantCulture, "{0}.", table);
@@ -218,7 +219,7 @@ namespace Lextm.SharpSnmpLib.Messaging
             return result;
         }
 
-        public static async Task<int> BulkWalkV3TsmAsync(IPEndPoint endpoint, ObjectIdentifier table, IList<Variable> list,  
+        public static async Task<int> BulkWalkV3TsmAsync(IPEndPoint endpoint, ObjectIdentifier table, IList<Variable> list,
             int maxRepetitions, int retries, TimeSpan timeout, WalkMode mode, IPrivacyProvider privacy, ISnmpMessage? report, X509Certificate2 certificate, TimeSpan? connectionTimeout)
         {
             if (endpoint is null)
@@ -259,11 +260,9 @@ namespace Lextm.SharpSnmpLib.Messaging
             var tableV = new Variable(table);
             var seed = tableV;
             var result = 0;
-            IList<Variable> next;
-            var message = report;
-            var data = await BulkHasNextV3TsmAsync(endpoint, seed, maxRepetitions, retries, timeout, privacy, message, certificate, connectionTimeout).ConfigureAwait(false);
-            next = data.Item2;
-            message = data.Item3;
+            var data = await BulkHasNextV3TsmAsync(endpoint, seed, maxRepetitions, retries, timeout, privacy, report, certificate, connectionTimeout).ConfigureAwait(false);
+            var next = data.Item2;
+            var message = data.Item3;
             while (data.Item1)
             {
                 var subTreeMask = string.Format(CultureInfo.InvariantCulture, "{0}.", table);
@@ -300,8 +299,8 @@ namespace Lextm.SharpSnmpLib.Messaging
 
         public static int MaxMessageSize { get; set; } = Header.MaxMessageSize;
 
-        private static async Task<Tuple<bool, IList<Variable>, ISnmpMessage>> BulkHasNextV2Async(IPEndPoint receiver, OctetString community,
-            Variable seed, int maxRepetitions, int retries, TimeSpan timeout, IPrivacyProvider? privacy, ISnmpMessage? report)
+        private static async Task<(bool, IList<Variable>, ISnmpMessage?)> BulkHasNextV2Async(IPEndPoint receiver, OctetString community,
+            Variable seed, int maxRepetitions, int retries, TimeSpan timeout, ISnmpMessage? report)
         {
             var completedRetries = 0;
             while (retries > completedRetries)
@@ -309,7 +308,14 @@ namespace Lextm.SharpSnmpLib.Messaging
                 try
                 {
                     var variables = new List<Variable> { new Variable(seed.Id) };
-                    var request = new GetBulkRequestMessage(_RequestCounter.NextId, VersionCode.V2, community, 0, maxRepetitions, variables);
+                    var request =
+                        new GetBulkRequestMessage(
+                            _RequestCounter.NextId,
+                            VersionCode.V2,
+                            community,
+                            0,
+                            maxRepetitions,
+                            variables);
                     using var cts = new CancellationTokenSource(timeout);
                     var reply = await request.GetResponseAsync(receiver, cts.Token).ConfigureAwait(false);
 
@@ -318,7 +324,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                         if (reply.Pdu().Variables.Count == 0)
                         {
                             // TODO: whether it is good to return?
-                            return new Tuple<bool, IList<Variable>, ISnmpMessage>(false, new List<Variable>(0), report);
+                            return (false, new List<Variable>(0), report);
                         }
 
                         var id = reply.Pdu().Variables[0].Id;
@@ -326,21 +332,17 @@ namespace Lextm.SharpSnmpLib.Messaging
                         {
                             // var error = id.GetErrorMessage();
                             // TODO: whether it is good to return?
-                            return new Tuple<bool, IList<Variable>, ISnmpMessage>(false, new List<Variable>(0), report);
+                            return (false, new List<Variable>(0), report);
                         }
 
                         //according to RFC 3414, send a second request to sync time.
                         request = new GetBulkRequestMessage(
-                            VersionCode.V2,
-                            _MessageCounter.NextId,
                             _RequestCounter.NextId,
+                            VersionCode.V2,
                             community,
                             0,
                             maxRepetitions,
-                            variables,
-                            privacy,
-                            MaxMessageSize,
-                            report);
+                            variables);
 
                         using var cts2 = new CancellationTokenSource(timeout);
                         reply = await request.GetResponseAsync(receiver, cts2.Token).ConfigureAwait(false);
@@ -354,7 +356,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                     }
 
                     var next = reply.Pdu().Variables;
-                    return new Tuple<bool, IList<Variable>, ISnmpMessage>(next.Count != 0, next, request);
+                    return (next.Count != 0, next, request);
                 }
                 catch (Exception ex) when (ex is TimeoutException || ex is OperationCanceledException || ex is System.TimeoutException)
                 {
@@ -365,7 +367,7 @@ namespace Lextm.SharpSnmpLib.Messaging
             throw new OperationCanceledException();
         }
 
-        private static async Task<Tuple<bool, IList<Variable>, ISnmpMessage>> BulkHasNextV3UsmAsync(IPEndPoint receiver, OctetString community,
+        private static async Task<(bool, IList<Variable>, ISnmpMessage)> BulkHasNextV3UsmAsync(IPEndPoint receiver, OctetString community,
             Variable seed, int maxRepetitions, int retries, TimeSpan timeout, IPrivacyProvider privacy, ISnmpMessage report)
         {
             var completedRetries = 0;
@@ -384,7 +386,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                         if (reply.Pdu().Variables.Count == 0)
                         {
                             // TODO: whether it is good to return?
-                            return new Tuple<bool, IList<Variable>, ISnmpMessage>(false, new List<Variable>(0), report);
+                            return (false, new List<Variable>(0), report);
                         }
 
                         var id = reply.Pdu().Variables[0].Id;
@@ -392,7 +394,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                         {
                             // var error = id.GetErrorMessage();
                             // TODO: whether it is good to return?
-                            return new Tuple<bool, IList<Variable>, ISnmpMessage>(false, new List<Variable>(0), report);
+                            return (false, new List<Variable>(0), report);
                         }
 
                         //according to RFC 3414, send a second request to sync time.
@@ -411,7 +413,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                     }
 
                     var next = reply.Pdu().Variables;
-                    return new Tuple<bool, IList<Variable>, ISnmpMessage>(next.Count != 0, next, request);
+                    return (next.Count != 0, next, request);
                 }
                 catch (Exception ex) when (ex is TimeoutException || ex is OperationCanceledException || ex is System.TimeoutException)
                 {
@@ -422,7 +424,7 @@ namespace Lextm.SharpSnmpLib.Messaging
             throw new OperationCanceledException();
         }
 
-        private static async Task<Tuple<bool, IList<Variable>, ISnmpMessage>> BulkHasNextV3TsmAsync(IPEndPoint receiver,
+        private static async Task<(bool, IList<Variable>, ISnmpMessage?)> BulkHasNextV3TsmAsync(IPEndPoint receiver,
             Variable seed, int maxRepetitions, int retries, TimeSpan timeout, IPrivacyProvider privacy, ISnmpMessage? report, X509Certificate2 certificate, TimeSpan? connectionTimeout)
         {
             var completedRetries = 0;
@@ -447,8 +449,8 @@ namespace Lextm.SharpSnmpLib.Messaging
                     {
                         if (reply.Pdu().Variables.Count == 0)
                         {
-                        // TODO: whether it is good to return?
-                        return new Tuple<bool, IList<Variable>, ISnmpMessage>(false, new List<Variable>(0), report);
+                            // TODO: whether it is good to return?
+                            return (false, new List<Variable>(0), report);
                         }
 
                         var id = reply.Pdu().Variables[0].Id;
@@ -456,7 +458,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                         {
                             // var error = id.GetErrorMessage();
                             // TODO: whether it is good to return?
-                            return new Tuple<bool, IList<Variable>, ISnmpMessage>(false, new List<Variable>(0), report);
+                            return (false, new List<Variable>(0), report);
                         }
 
                         //according to RFC 3414, send a second request to sync time.
@@ -473,7 +475,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                     }
 
                     var next = reply.Pdu().Variables;
-                    return new Tuple<bool, IList<Variable>, ISnmpMessage>(next.Count != 0, next, request);
+                    return (next.Count != 0, next, request);
                 }
                 catch (Exception ex) when (ex is TimeoutException || ex is OperationCanceledException || ex is System.TimeoutException)
                 {

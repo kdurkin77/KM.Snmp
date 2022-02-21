@@ -1,9 +1,9 @@
 ﻿using DTLS;
+using KM.Snmp.Interfaces;
 using Lextm.SharpSnmpLib;
 using Lextm.SharpSnmpLib.Messaging;
 using Lextm.SharpSnmpLib.Security;
 using Microsoft.Extensions.Logging;
-using KM.Snmp.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +45,7 @@ namespace KM.Snmp
                 throw new ArgumentException(oid, nameof(oid));
             }
 
-            if(string.IsNullOrWhiteSpace(community))
+            if (string.IsNullOrWhiteSpace(community))
             {
                 throw new ArgumentNullException(nameof(community));
             }
@@ -58,19 +58,19 @@ namespace KM.Snmp
             var maxRepetitionsValue = maxRepetitions ?? 10;
             if (maxRepetitionsValue <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxRepetitionsValue), maxRepetitionsValue.ToString());
+                throw new ArgumentOutOfRangeException(nameof(maxRepetitions), maxRepetitions.ToString());
             }
 
             var retriesValue = retries ?? 2;
             if (retriesValue <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(retriesValue), retriesValue.ToString());
+                throw new ArgumentOutOfRangeException(nameof(retries), retries.ToString());
             }
 
             var timeoutMs = timeout ?? TimeSpan.FromSeconds(5);
             if (timeoutMs <= TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(timeoutMs), timeoutMs.ToString());
+                throw new ArgumentOutOfRangeException(nameof(timeout), timeout.ToString());
             }
 
             var results = new List<Variable>();
@@ -82,14 +82,13 @@ namespace KM.Snmp
                 maxRepetitionsValue,
                 retriesValue,
                 timeoutMs,
-                WalkMode.WithinSubtree,
-                null,
-                null
+                WalkMode.WithinSubtree
                 ).ConfigureAwait(false);
 
             return (bulkwalkResult, results);
         }
 
+        [Obsolete("SHA1 and DES are insecure")]
         public async Task<(int bulkwalkResult, IList<Variable> results)> GetSubtreeV3UsmAsync(IPAddress ip, string oid, string community, int port, int? maxRepetitions,
             int? retries, TimeSpan? timeout, string authPassword, string privPassword)
         {
@@ -116,19 +115,19 @@ namespace KM.Snmp
             var maxRepetitionsValue = maxRepetitions ?? 10;
             if (maxRepetitionsValue <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxRepetitionsValue), maxRepetitionsValue.ToString());
+                throw new ArgumentOutOfRangeException(nameof(maxRepetitions), maxRepetitions.ToString());
             }
 
             var retriesValue = retries ?? 2;
             if (retriesValue <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(retriesValue), retriesValue.ToString());
+                throw new ArgumentOutOfRangeException(nameof(retries), retries.ToString());
             }
 
             var timeoutMs = timeout ?? TimeSpan.FromSeconds(5);
             if (timeoutMs <= TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(timeoutMs), timeoutMs.ToString());
+                throw new ArgumentOutOfRangeException(nameof(timeout), timeout.ToString());
             }
 
             if (string.IsNullOrWhiteSpace(authPassword))
@@ -163,7 +162,7 @@ namespace KM.Snmp
             return (bulkwalkResult, results);
         }
 
-        public async Task<(int bulkwalkResult, IList<Variable> results)> GetSubtreeV3TsmAsync(IPAddress ip, string oid, int port, int? maxRepetitions, 
+        public async Task<(int bulkwalkResult, IList<Variable> results)> GetSubtreeV3TsmAsync(IPAddress ip, string oid, int port, int? maxRepetitions,
             int? retries, TimeSpan? timeout, X509Certificate2 certificate, TimeSpan? connectionTimeout)
         {
             if (ip == null)
@@ -189,19 +188,19 @@ namespace KM.Snmp
             var maxRepetitionsValue = maxRepetitions ?? 10;
             if (maxRepetitionsValue <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(maxRepetitionsValue), maxRepetitionsValue.ToString());
+                throw new ArgumentOutOfRangeException(nameof(maxRepetitions), maxRepetitions.ToString());
             }
 
             var retriesValue = retries ?? 2;
             if (retriesValue <= 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(retriesValue), retriesValue.ToString());
+                throw new ArgumentOutOfRangeException(nameof(retries), retries.ToString());
             }
 
             var timeoutMs = timeout ?? TimeSpan.FromSeconds(5);
             if (timeoutMs <= TimeSpan.Zero)
             {
-                throw new ArgumentOutOfRangeException(nameof(timeoutMs), timeoutMs.ToString());
+                throw new ArgumentOutOfRangeException(nameof(timeout), timeout.ToString());
             }
 
             var connTimeout = connectionTimeout ?? TimeSpan.FromSeconds(2);
@@ -210,7 +209,7 @@ namespace KM.Snmp
                 throw new ArgumentOutOfRangeException(nameof(connectionTimeout));
             }
 
-            if(certificate is null)
+            if (certificate is null)
             {
                 throw new ArgumentNullException(nameof(certificate));
             }
@@ -236,7 +235,7 @@ namespace KM.Snmp
             return (bulkwalkResult, results);
         }
 
-        public async Task<Variable> GetV2Async(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout)
+        public async Task<Variable?> GetV2Async(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout)
         {
             if (ip == null)
             {
@@ -312,7 +311,8 @@ namespace KM.Snmp
         }
 
         //Needs Tested
-        public async Task<Variable> GetV3UsmAsync(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout,
+        [Obsolete("SHA1 and DES are insecure")]
+        public async Task<Variable?> GetV3UsmAsync(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout,
             string authPass, string privPass)
         {
             if (ip == null)
@@ -433,7 +433,7 @@ namespace KM.Snmp
             return reply.FirstOrDefault();
         }
 
-        public async Task<Variable> GetV3TsmAsync(IPAddress ip, string oid, int retries, int port, TimeSpan timeout,
+        public async Task<Variable?> GetV3TsmAsync(IPAddress ip, string oid, int retries, int port, TimeSpan timeout,
             X509Certificate2 certificate, TimeSpan connectionTimeout)
         {
             if (ip == null)
@@ -563,7 +563,7 @@ namespace KM.Snmp
             return reply.FirstOrDefault();
         }
 
-        public async Task<ISnmpMessage> SetV2Async<T>(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout, T setValue)
+        public async Task<ISnmpMessage?> SetV2Async<T>(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout, T setValue)
         {
             if (ip == null)
             {
@@ -605,7 +605,7 @@ namespace KM.Snmp
             var snmpVersion = "2c";
 
             var attempt = 0;
-            ISnmpMessage response = null;
+            ISnmpMessage? response = null;
             while (attempt < retries)
             {
                 var setValueByType = setValue switch
@@ -620,11 +620,11 @@ namespace KM.Snmp
 
                 try
                 {
-                    using var cts = new CancellationTokenSource(timeout);
                     var receiver = new IPEndPoint(ip, port);
                     var request = new SetRequestMessage(Messenger.NextMessageId, VersionCode.V2, new OctetString(community),
                                new List<Variable> { setValueByType });
 
+                    using var cts = new CancellationTokenSource(timeout);
                     response = await request.GetResponseAsync(receiver, cts.Token).ConfigureAwait(false);
 
                     if (response is ReportMessage)
@@ -656,7 +656,7 @@ namespace KM.Snmp
 
             }
 
-            if(response is null)
+            if (response is null)
             {
                 await _SnmpLog.LogTransactionAsync(startDate, ip.ToString(), oid, community, snmpType, snmpVersion, SnmpType.Null.ToString(), null).ConfigureAwait(false);
                 return response;
@@ -670,7 +670,8 @@ namespace KM.Snmp
         }
 
         //This part has not been tested. We need a USM setup to test
-        public async Task<ISnmpMessage> SetV3UsmAsync<T>(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout, 
+        [Obsolete("SHA1 and DES are insecure")]
+        public async Task<ISnmpMessage?> SetV3UsmAsync<T>(IPAddress ip, string oid, string community, int retries, int port, TimeSpan timeout,
             string authPass, string privPass, T setValue)
         {
             if (ip == null)
@@ -713,7 +714,7 @@ namespace KM.Snmp
             var snmpVersion = $"3 {SecurityModel.Usm}";
 
             var attempt = 0;
-            ISnmpMessage response = null;
+            ISnmpMessage? response = null;
             while (attempt < retries)
             {
                 var setValueByType = setValue switch
@@ -788,7 +789,7 @@ namespace KM.Snmp
             return response;
         }
 
-        public async Task<ISnmpMessage> SetV3TsmAsync<T>(IPAddress ip, string oid, int retries, int port, TimeSpan timeout, 
+        public async Task<ISnmpMessage?> SetV3TsmAsync<T>(IPAddress ip, string oid, int retries, int port, TimeSpan timeout,
             X509Certificate2 certificate, TimeSpan connectionTimeout, T setValue)
         {
             if (ip == null)
@@ -836,7 +837,7 @@ namespace KM.Snmp
             var snmpVersion = $"3 {SecurityModel.Tsm}";
 
             var attempt = 0;
-            ISnmpMessage response = null;
+            ISnmpMessage? response = null;
             while (attempt < retries)
             {
                 var setValueByType = setValue switch
