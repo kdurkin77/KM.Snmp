@@ -42,10 +42,10 @@ namespace DependencyInjectionTest
             GC.SuppressFinalize(this);
         }
 
-        private readonly Lazy<IPAddress> _localIpAddress = new Lazy<IPAddress>(() =>
+        private readonly Lazy<IPAddress> _localIpAddress = new(() =>
             Dns.GetHostEntry(Dns.GetHostName()).AddressList
                 .Where(ip => ip.AddressFamily == AddressFamily.InterNetwork)
-                .FirstOrDefault()
+                .FirstOrDefault() ?? IPAddress.Loopback
             );
 
         private IPAddress GetLocalIPAddress()

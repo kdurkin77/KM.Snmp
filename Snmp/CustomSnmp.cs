@@ -272,7 +272,7 @@ namespace KM.Snmp
             var snmpVersion = "2c";
 
             var attempt = 0;
-            IEnumerable<Variable> result = new List<Variable>();
+            IEnumerable<Variable> result = [];
             while (attempt < retries)
             {
                 try
@@ -280,7 +280,7 @@ namespace KM.Snmp
                     result = await MyMessenger.GetAsync(VersionCode.V2,
                         new IPEndPoint(ip, port),
                         new OctetString(community),
-                        new List<Variable> { new Variable(new ObjectIdentifier(oid)) },
+                        [new(new ObjectIdentifier(oid))],
                         timeout
                         ).ConfigureAwait(false);
 
@@ -360,7 +360,7 @@ namespace KM.Snmp
             var snmpVersion = $"3 {SecurityModel.Usm}";
 
             var attempt = 0;
-            IEnumerable<Variable> reply = new List<Variable>();
+            IEnumerable<Variable> reply = [];
             while (attempt < retries)
             {
                 try
@@ -368,7 +368,7 @@ namespace KM.Snmp
                     var receiver = new IPEndPoint(ip, port);
                     var clientEndPoint = ip.AddressFamily == AddressFamily.InterNetwork
                         ? new IPEndPoint(IPAddress.Any, 0) : new IPEndPoint(IPAddress.IPv6Any, 0);
-                    var vList = new List<Variable>() { new Variable(new ObjectIdentifier(oid)) };
+                    var vList = new List<Variable>() { new(new ObjectIdentifier(oid)) };
 
                     using var cts = new CancellationTokenSource(timeout);
                     var discovery = Messenger.GetNextDiscovery(SnmpType.GetRequestPdu);
@@ -481,7 +481,7 @@ namespace KM.Snmp
             var snmpVersion = $"3 {SecurityModel.Tsm}";
 
             var attempt = 0;
-            IEnumerable<Variable> reply = new List<Variable>();
+            IEnumerable<Variable> reply = [];
             while (attempt < retries)
             {
                 try
@@ -489,7 +489,7 @@ namespace KM.Snmp
                     var receiver = new IPEndPoint(ip, port);
                     var clientEndPoint = ip.AddressFamily == AddressFamily.InterNetwork
                         ? new IPEndPoint(IPAddress.Any, 0) : new IPEndPoint(IPAddress.IPv6Any, 0);
-                    var vList = new List<Variable>() { new Variable(new ObjectIdentifier(oid)) };
+                    var vList = new List<Variable>() { new(new ObjectIdentifier(oid)) };
 
                     var chain = new X509Chain();
                     chain.Build(certificate);
@@ -622,7 +622,7 @@ namespace KM.Snmp
                 {
                     var receiver = new IPEndPoint(ip, port);
                     var request = new SetRequestMessage(Messenger.NextMessageId, VersionCode.V2, new OctetString(community),
-                               new List<Variable> { setValueByType });
+                               [setValueByType]);
 
                     using var cts = new CancellationTokenSource(timeout);
                     response = await request.GetResponseAsync(receiver, cts.Token).ConfigureAwait(false);

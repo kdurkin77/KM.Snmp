@@ -24,7 +24,8 @@ namespace Test
             var timeout = TimeSpan.FromSeconds(5);
 
             //SNMPv3 Parameters
-            var certificate = new X509Certificate2();
+            var certFilename = "";
+            var certificate = new X509Certificate2(certFilename);
             var connectionTimeout = TimeSpan.FromSeconds(2);
 
             //Set Value can be int, string (octetstring), IPAddress, byte[], or uint
@@ -166,16 +167,16 @@ namespace Test
             public void Dispose() { }
         }
 
-        private static readonly DummyScope _dummyScope = new DummyScope();
+        private static readonly DummyScope _dummyScope = new();
 
-        public IDisposable BeginScope<TState>(TState state)
+        public IDisposable? BeginScope<TState>(TState state) where TState : notnull
         {
             return _dummyScope;
         }
 
         public bool IsEnabled(LogLevel logLevel) => logLevel != LogLevel.None;
 
-        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
+        public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
         {
             //Log here
         }

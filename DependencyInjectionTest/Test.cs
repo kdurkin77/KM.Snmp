@@ -24,12 +24,7 @@ namespace DependencyInjectionTest
             var port = 161;
             var timeout = TimeSpan.FromSeconds(5);
 
-            var result = await _CustomSnmp.GetV2Async(ip, oid, communityString, retries, port, timeout);
-            if (result is null)
-            {
-                throw new Exception("Snmp Failed");
-            }
-
+            var result = await _CustomSnmp.GetV2Async(ip, oid, communityString, retries, port, timeout) ?? throw new Exception("Snmp Failed");
             var type = result.Data.TypeCode;
             var data = result.Data;
             if (type != SnmpType.OctetString)

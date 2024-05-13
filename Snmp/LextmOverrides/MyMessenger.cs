@@ -307,7 +307,7 @@ namespace Lextm.SharpSnmpLib.Messaging
             {
                 try
                 {
-                    var variables = new List<Variable> { new Variable(seed.Id) };
+                    var variables = new List<Variable> { new(seed.Id) };
                     var request =
                         new GetBulkRequestMessage(
                             _RequestCounter.NextId,
@@ -375,8 +375,8 @@ namespace Lextm.SharpSnmpLib.Messaging
             {
                 try
                 {
-                    var variables = new List<Variable> { new Variable(seed.Id) };
-                    var request = new GetBulkRequestMessage(VersionCode.V3, _MessageCounter.NextId, _RequestCounter.NextId, community, 0,
+                    var variables = new List<Variable> { new(seed.Id) };
+                    var request = new GetBulkRequestMessage(VersionCode.V3, _MessageCounter.NextId, _RequestCounter.NextId, community, OctetString.Empty, 0,
                         maxRepetitions, variables, privacy, MaxMessageSize, report);
                     using var cts = new CancellationTokenSource(timeout);
                     var reply = await request.GetResponseAsync(receiver, cts.Token).ConfigureAwait(false);
@@ -398,7 +398,7 @@ namespace Lextm.SharpSnmpLib.Messaging
                         }
 
                         //according to RFC 3414, send a second request to sync time.
-                        request = new GetBulkRequestMessage(VersionCode.V3, _MessageCounter.NextId, _RequestCounter.NextId, community, 0,
+                        request = new GetBulkRequestMessage(VersionCode.V3, _MessageCounter.NextId, _RequestCounter.NextId, community, OctetString.Empty, 0,
                         maxRepetitions, variables, privacy, MaxMessageSize, report);
 
                         using var cts2 = new CancellationTokenSource(timeout);
@@ -432,7 +432,7 @@ namespace Lextm.SharpSnmpLib.Messaging
             {
                 try
                 {
-                    var variables = new List<Variable> { new Variable(seed.Id) };
+                    var variables = new List<Variable> { new(seed.Id) };
                     var request = new GetBulkRequestMessage(VersionCode.V3, _MessageCounter.NextId, _RequestCounter.NextId, OctetString.Empty, 0,
                         maxRepetitions, variables, privacy, MaxMessageSize);
 
