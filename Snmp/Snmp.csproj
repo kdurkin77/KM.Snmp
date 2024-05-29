@@ -14,10 +14,9 @@
     <Product>KM.Snmp</Product>
     <Description>This library is meant work on top of KM.Lextm.SharpSnmp (a fork of Lextm.SharpSnmp) which easily allows you to do SNMP commands get/set/getbulk/getsubree with timeouts and retries</Description>
     <PackageReleaseNotes>
-			Updated to use new DTLS2.NET and KM.Lextm.SharpSnmpLib
-			Added NET8 and removed NET5 support
+        Updated DTLS2.Net and KM.Lextm.SharpSnmpLib packages which has a fix for .net8 loading certificates
     </PackageReleaseNotes>
-    <Version>1.2.1</Version>
+    <Version>1.2.2</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -25,8 +24,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DTLS2.Net" Version="1.1.4" />
-    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.5.4" />
+    <PackageReference Include="DTLS2.Net" Version="1.1.5" />
+    <PackageReference Include="KM.Lextm.SharpSnmpLib" Version="12.5.5" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1" />
     <PackageReference Include="KM.Snmp.Interfaces" Version="1.1.0" />
   </ItemGroup>
